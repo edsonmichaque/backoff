@@ -2,25 +2,30 @@ package main
 
 import (
 	"fmt"
-	//"time"
+	"time"
 
 	"github.com/edsonmichaque/backoff"
 )
 
 func main() {
-	backoffFunc := func(res int64, b backoff.Backoff) backoff.Backoff {
-		return backoff.NextDelayFunc(func(i int) int64 {
-			return 1000 * b.NextDelay(i)
-		})
-	}
+	var bo backoff.Backoff = backoff.Initialdelay(
+		150*time.Millisecond, backoff.MaxAttemps(5, backoff.Exponential()),
+	)
 
-	var bo backoff.Backoff = backoffFunc(1000, backoff.Linear())
+	go func() {
+		for i := 0; ; i++ {
+			next, err := bo.NextDelay(i)
+			if err != nil {
+				panic(err)
+			}
 
-	bo = backoff.EqualJitter(bo)
+			fmt.Printf("%v %v %v\n", i, next, time.Duration(next))
+			time.Sleep(time.Duration(next))
+		}
+	}()
 
-	for i := 0; i < 10; i++ {
-		next := bo.NextDelay(i)
+	t := time.NewTimer(30 * time.Second)
 
-		fmt.Printf("%v %v %v\n", i, next, next*100)
-	}
+	<-t.C
+	fmt.Print("Max timeout reached\n")
 }
