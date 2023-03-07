@@ -1,4 +1,4 @@
-package backoff
+package backoffkit
 
 import (
 	"math"
