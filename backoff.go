@@ -8,9 +8,9 @@ type Backoff interface {
 	NextDelay(int) int64
 }
 
-type NextDelayFunc( func(int) int64
+type NextDelayFunc func(int) int64
 
-func (b NextDelayFunc() NextDelay(step int) int64 {
+func (b NextDelayFunc) NextDelay(step int) int64 {
 	return b(step)
 }
 
@@ -20,8 +20,8 @@ const (
 	nullMultiplier   = 0
 )
 
-func Exponential() Backoff {
-	return NextDelayFunc((func(step int) int64 {
+func Exponential() NextDelayFunc {
+	return NextDelayFunc(func(step int) int64 {
 		if step == initialStep {
 			return nullMultiplier
 		}
@@ -30,14 +30,14 @@ func Exponential() Backoff {
 	})
 }
 
-func Linear() Backoff {
-	return NextDelayFunc((func(step int) int64 {
+func Linear() NextDelayFunc {
+	return NextDelayFunc(func(step int) int64 {
 		return int64(step)
 	})
 }
 
-func Fixed() Backoff {
-	return NextDelayFunc((func(step int) int64 {
+func Fixed() NextDelayFunc {
+	return NextDelayFunc(func(step int) int64 {
 		if step == initialStep {
 			return nullMultiplier
 		}

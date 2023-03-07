@@ -9,7 +9,7 @@ import (
 
 func main() {
 	backoffFunc := func(res int64, b backoff.Backoff) backoff.Backoff {
-		return backoff.NextDelayFunc((func(i int) int64 {
+		return backoff.NextDelayFunc(func(i int) int64 {
 			return 1000 * b.NextDelay(i)
 		})
 	}
