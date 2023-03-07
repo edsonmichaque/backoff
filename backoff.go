@@ -5,12 +5,12 @@ import (
 )
 
 type Backoff interface {
-	Backoff(int) int
+	Backoff(int) int64
 }
 
-type BackoffFunc func(int) int
+type BackoffFunc func(int) int64
 
-func (b BackoffFunc) Backoff(step int) int {
+func (b BackoffFunc) Backoff(step int) int64 {
 	return b(step)
 }
 
@@ -20,24 +20,24 @@ const (
 	nullMultiplier   = 0
 )
 
-func Exponential() BackoffFunc {
-	return BackoffFunc(func(step int) int {
+func Exponential() Backoff {
+	return BackoffFunc(func(step int) int64 {
 		if step == initialStep {
 			return nullMultiplier
 		}
 
-		return int(math.Exp2(float64(step - 1)))
+		return int64(math.Exp2(float64(step - 1)))
 	})
 }
 
-func Linear() BackoffFunc {
-	return BackoffFunc(func(step int) int {
-		return step
+func Linear() Backoff {
+	return BackoffFunc(func(step int) int64 {
+		return int64(step)
 	})
 }
 
-func Fixed() BackoffFunc {
-	return BackoffFunc(func(step int) int {
+func Fixed() Backoff {
+	return BackoffFunc(func(step int) int64 {
 		if step == initialStep {
 			return nullMultiplier
 		}

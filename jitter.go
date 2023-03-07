@@ -5,8 +5,8 @@ import (
 	"math/big"
 )
 
-func EqualJitter(b Backoff) BackoffFunc {
-	return BackoffFunc(func(i int) int {
+func EqualJitter(b Backoff) Backoff {
+	return BackoffFunc(func(i int) int64 {
 		dur := b.Backoff(i)
 
 		dur = dur / 2
@@ -15,28 +15,28 @@ func EqualJitter(b Backoff) BackoffFunc {
 			return dur
 		}
 
-		jitter, err := rand.Int(rand.Reader, big.NewInt(int64(dur)))
+		jitter, err := rand.Int(rand.Reader, big.NewInt(int64(dur+1)))
 		if err != nil {
 			panic(err)
 		}
 
-		return dur + int(jitter.Int64())
+		return dur + jitter.Int64()
 	})
 }
 
-func FullJitter(b BackoffFunc) BackoffFunc {
-	return BackoffFunc(func(i int) int {
-		dur := b(i)
+func FullJitter(b Backoff) Backoff {
+	return BackoffFunc(func(i int) int64 {
+		dur := b.Backoff(i)
 
 		if dur <= 0 {
 			return dur
 		}
 
-		jitter, err := rand.Int(rand.Reader, big.NewInt(int64(dur)))
+		jitter, err := rand.Int(rand.Reader, big.NewInt(int64(dur+1)))
 		if err != nil {
 			panic(err)
 		}
 
-		return int(jitter.Int64())
+		return jitter.Int64()
 	})
 }
