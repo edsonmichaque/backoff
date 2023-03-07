@@ -14,10 +14,16 @@ func (b BackoffFunc) Backoff(step int) int {
 	return b(step)
 }
 
+const (
+	initialStep      = 0
+	linearMultiplier = 1
+	nullMultiplier   = 0
+)
+
 func Exponential() BackoffFunc {
 	return BackoffFunc(func(step int) int {
-		if step == 0 {
-			return 0
+		if step == initialStep {
+			return nullMultiplier
 		}
 
 		return int(math.Exp2(float64(step - 1)))
@@ -32,10 +38,10 @@ func Linear() BackoffFunc {
 
 func Fixed() BackoffFunc {
 	return BackoffFunc(func(step int) int {
-		if step == 0 {
-			return 0
+		if step == initialStep {
+			return nullMultiplier
 		}
 
-		return 1
+		return linearMultiplier
 	})
 }
