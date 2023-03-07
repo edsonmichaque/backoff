@@ -6,8 +6,8 @@ import (
 )
 
 func EqualJitter(b Backoff) Backoff {
-	return BackoffFunc(func(i int) int64 {
-		dur := b.Backoff(i)
+	return NextDelayFunc((func(i int) int64 {
+		dur := b.NextDelay(i)
 
 		dur = dur / 2
 
@@ -25,8 +25,8 @@ func EqualJitter(b Backoff) Backoff {
 }
 
 func FullJitter(b Backoff) Backoff {
-	return BackoffFunc(func(i int) int64 {
-		dur := b.Backoff(i)
+	return NextDelayFunc((func(i int) int64 {
+		dur := b.NextDelay(i)
 
 		if dur <= 0 {
 			return dur

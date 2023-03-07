@@ -5,12 +5,12 @@ import (
 )
 
 type Backoff interface {
-	Backoff(int) int64
+	NextDelay(int) int64
 }
 
-type BackoffFunc func(int) int64
+type NextDelayFunc( func(int) int64
 
-func (b BackoffFunc) Backoff(step int) int64 {
+func (b NextDelayFunc() NextDelay(step int) int64 {
 	return b(step)
 }
 
@@ -21,7 +21,7 @@ const (
 )
 
 func Exponential() Backoff {
-	return BackoffFunc(func(step int) int64 {
+	return NextDelayFunc((func(step int) int64 {
 		if step == initialStep {
 			return nullMultiplier
 		}
@@ -31,13 +31,13 @@ func Exponential() Backoff {
 }
 
 func Linear() Backoff {
-	return BackoffFunc(func(step int) int64 {
+	return NextDelayFunc((func(step int) int64 {
 		return int64(step)
 	})
 }
 
 func Fixed() Backoff {
-	return BackoffFunc(func(step int) int64 {
+	return NextDelayFunc((func(step int) int64 {
 		if step == initialStep {
 			return nullMultiplier
 		}
