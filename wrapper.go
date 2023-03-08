@@ -8,8 +8,8 @@ import (
 )
 
 func EqualJitter(b Backoff) Backoff {
-	return NextDelayFunc(func(i int) (int64, error) {
-		dur, err := b.NextDelay(i)
+	return ComputeDelayFunc(func(i int) (int64, error) {
+		dur, err := b.ComputeDelay(i)
 		if err != nil {
 			return 0, err
 		}
@@ -30,8 +30,8 @@ func EqualJitter(b Backoff) Backoff {
 }
 
 func FullJitter(b Backoff) Backoff {
-	return NextDelayFunc(func(i int) (int64, error) {
-		dur, err := b.NextDelay(i)
+	return ComputeDelayFunc(func(i int) (int64, error) {
+		dur, err := b.ComputeDelay(i)
 		if err != nil {
 			return 0, err
 		}
@@ -53,20 +53,20 @@ var ErrMaxAttempts = errors.New("max attempts reached")
 
 func MaxAttempts(attempts int) BackoffWrapper {
 	return func(b Backoff) Backoff {
-		return NextDelayFunc(func(i int) (int64, error) {
+		return ComputeDelayFunc(func(i int) (int64, error) {
 			if i >= attempts {
 				return 0, ErrMaxAttempts
 			}
 
-			return b.NextDelay(i)
+			return b.ComputeDelay(i)
 		})
 	}
 }
 
 func InitialDelay(dur time.Duration) BackoffWrapper {
 	return func(b Backoff) Backoff {
-		return NextDelayFunc(func(i int) (int64, error) {
-			nextDelay, err := b.NextDelay(i)
+		return ComputeDelayFunc(func(i int) (int64, error) {
+			nextDelay, err := b.ComputeDelay(i)
 			if err != nil {
 				return 0, err
 			}

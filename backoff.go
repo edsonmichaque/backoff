@@ -9,11 +9,11 @@ const (
 type BackoffWrapper func(Backoff) Backoff
 
 type Backoff interface {
-	NextDelay(int) (int64, error)
+	ComputeDelay(int) (int64, error)
 }
 
-type NextDelayFunc func(int) (int64, error)
+type ComputeDelayFunc func(int) (int64, error)
 
-func (n NextDelayFunc) NextDelay(step int) (int64, error) {
+func (n ComputeDelayFunc) ComputeDelay(step int) (int64, error) {
 	return n(step)
 }

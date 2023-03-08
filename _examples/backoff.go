@@ -21,7 +21,7 @@ func main() {
 
 	go func() {
 		for i := 0; ; i++ {
-			next, err := backoff.NextDelay(i)
+			next, err := backoff.ComputeDelay(i)
 			if err != nil {
 				panic(err)
 			}

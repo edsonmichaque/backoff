@@ -1,7 +1,7 @@
 package backoff
 
-func Constant() NextDelayFunc {
-	return NextDelayFunc(func(step int) (int64, error) {
+func Constant() ComputeDelayFunc {
+	return ComputeDelayFunc(func(step int) (int64, error) {
 		if step == initialStep {
 			return nullMultiplier, nil
 		}

@@ -4,8 +4,8 @@ import (
 	"math"
 )
 
-func Exponential() NextDelayFunc {
-	return NextDelayFunc(func(step int) (int64, error) {
+func Exponential() ComputeDelayFunc {
+	return ComputeDelayFunc(func(step int) (int64, error) {
 		if step == initialStep {
 			return nullMultiplier, nil
 		}
