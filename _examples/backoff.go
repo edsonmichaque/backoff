@@ -10,8 +10,15 @@ import (
 func main() {
 	var backoff backoffkit.Backoff = backoffkit.Exponential()
 
-	backoff = backoffkit.MaxAttempts(8)(backoff)
-	backoff = backoffkit.InitialDelay(100 * time.Millisecond)(backoff)
+	transforms := []func(backoffkit.Backoff) backoffkit.Backoff{
+		backoffkit.MaxAttempts(8),
+		backoffkit.InitialDelay(100 * time.Millisecond),
+		//backoffkit.EqualJitter,
+	}
+
+	for _, transformerFunc := range transforms {
+		backoff = transformerFunc(backoff)
+	}
 
 	go func() {
 		for i := 0; ; i++ {
