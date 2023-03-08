@@ -4,17 +4,18 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/edsonmichaque/backoff"
+	"github.com/edsonmichaque/backoffkit"
 )
 
 func main() {
-	var bo backoff.Backoff = backoff.Initialdelay(
-		150*time.Millisecond, backoff.MaxAttemps(5, backoff.Exponential()),
-	)
+	var backoff backoffkit.Backoff = backoffkit.Exponential()
+
+	backoff = backoffkit.MaxAttempts(8)(backoff)
+	backoff = backoffkit.InitialDelay(100 * time.Millisecond)(backoff)
 
 	go func() {
 		for i := 0; ; i++ {
-			next, err := bo.NextDelay(i)
+			next, err := backoff.NextDelay(i)
 			if err != nil {
 				panic(err)
 			}

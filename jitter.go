@@ -51,14 +51,16 @@ func FullJitter(b Backoff) Backoff {
 
 var ErrMaxAttempts = errors.New("max attempts reached")
 
-func MaxAttemps(attempts int, b Backoff) Backoff {
-	return NextDelayFunc(func(i int) (int64, error) {
-		if i >= attempts {
-			return 0, ErrMaxAttempts
-		}
+func MaxAttempts(attempts int) func(Backoff) Backoff {
+	return func(b Backoff) Backoff {
+		return NextDelayFunc(func(i int) (int64, error) {
+			if i >= attempts {
+				return 0, ErrMaxAttempts
+			}
 
-		return b.NextDelay(i)
-	})
+			return b.NextDelay(i)
+		})
+	}
 }
 
 func Chain(backoff Backoff, items ...func(Backoff) Backoff) Backoff {
@@ -71,13 +73,15 @@ func Chain(backoff Backoff, items ...func(Backoff) Backoff) Backoff {
 	return wrappedbackoff
 }
 
-func Initialdelay(dur time.Duration, b Backoff) Backoff {
-	return NextDelayFunc(func(i int) (int64, error) {
-		nextDelay, err := b.NextDelay(i)
-		if err != nil {
-			return 0, err
-		}
+func InitialDelay(dur time.Duration) func(Backoff) Backoff {
+	return func(b Backoff) Backoff {
+		return NextDelayFunc(func(i int) (int64, error) {
+			nextDelay, err := b.NextDelay(i)
+			if err != nil {
+				return 0, err
+			}
 
-		return int64(dur) * nextDelay, nil
-	})
+			return int64(dur) * nextDelay, nil
+		})
+	}
 }
