@@ -1,4 +1,4 @@
-package backoffkit
+package backoff
 
 const (
 	initialStep      = 0

@@ -4,15 +4,15 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/edsonmichaque/backoffkit"
+	"github.com/edsonmichaque/go-backoff"
 )
 
 func main() {
-	var backoff backoffkit.Backoff = backoffkit.Exponential()
+	var backoff backoff.Backoff = backoff.Exponential()
 
-	wrappers := []backoffkit.BackoffWrapper{
-		backoffkit.MaxAttempts(8),
-		backoffkit.InitialDelay(100 * time.Millisecond),
+	wrappers := []backoff.BackoffWrapper{
+		backoff.MaxAttempts(8),
+		backoff.InitialDelay(100 * time.Millisecond),
 	}
 
 	for _, wrapper := range wrappers {

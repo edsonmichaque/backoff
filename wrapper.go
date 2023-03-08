@@ -1,4 +1,4 @@
-package backoffkit
+package backoff
 
 import (
 	"crypto/rand"

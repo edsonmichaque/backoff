@@ -1,4 +1,4 @@
-package backoffkit
+package backoff
 
 func Constant() NextDelayFunc {
 	return NextDelayFunc(func(step int) (int64, error) {
