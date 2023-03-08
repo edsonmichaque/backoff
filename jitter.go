@@ -51,7 +51,7 @@ func FullJitter(b Backoff) Backoff {
 
 var ErrMaxAttempts = errors.New("max attempts reached")
 
-func MaxAttempts(attempts int) func(Backoff) Backoff {
+func MaxAttempts(attempts int) BackoffWrapper {
 	return func(b Backoff) Backoff {
 		return NextDelayFunc(func(i int) (int64, error) {
 			if i >= attempts {
@@ -63,7 +63,7 @@ func MaxAttempts(attempts int) func(Backoff) Backoff {
 	}
 }
 
-func InitialDelay(dur time.Duration) func(Backoff) Backoff {
+func InitialDelay(dur time.Duration) BackoffWrapper {
 	return func(b Backoff) Backoff {
 		return NextDelayFunc(func(i int) (int64, error) {
 			nextDelay, err := b.NextDelay(i)

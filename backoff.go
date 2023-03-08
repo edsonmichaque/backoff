@@ -10,6 +10,8 @@ const (
 	nullMultiplier   = 0
 )
 
+type BackoffWrapper func(Backoff) Backoff
+
 type Backoff interface {
 	NextDelay(int) (int64, error)
 }
