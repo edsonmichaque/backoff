@@ -63,16 +63,6 @@ func MaxAttempts(attempts int) func(Backoff) Backoff {
 	}
 }
 
-func Chain(backoff Backoff, items ...func(Backoff) Backoff) Backoff {
-	var wrappedbackoff Backoff
-
-	for _, item := range items {
-		wrappedbackoff = item(backoff)
-	}
-
-	return wrappedbackoff
-}
-
 func InitialDelay(dur time.Duration) func(Backoff) Backoff {
 	return func(b Backoff) Backoff {
 		return NextDelayFunc(func(i int) (int64, error) {
